@@ -1,0 +1,52 @@
+#include <LiquidCrystal.h>  // Including Liquid Crystal header file
+LiquidCrystal lcd(1,2,4,5,6,7);  // Initializing pins for LCD
+
+void setup() 
+{
+  pinMode(A0, INPUT);  // Initialize analog pin 0 as input 
+  lcd.begin(16,2);  // Intialize LCD
+  DDRB = 0xFF;  // Intialize all of Port B as output (MEGA2560)
+}
+
+void loop() 
+{ 
+  int sensorVal = analogRead(A0);  // Read TGS 2602 Output and store in int
+  lcd.clear();  // Clear LCD display
+  if (sensorVal < 200)
+  {
+    lcd.print("NO CONC.");  // Print to LCD
+    lcd.setCursor(0,2);
+    lcd.print("SensRead:"); lcd.print(sensorVal);
+    for(int j = 0; j <= 10; j++)  // Flash RGB LED 10 times
+    {
+    PORTB = 0b00000001; 
+    delay(150);
+    PORTB = 0x00;
+    delay(150);
+    }  
+  }
+  else if(sensorVal >= 200 && sensorVal < 400)  // Low concentration case
+  {
+    PORTB = 0b00000001;  // Make RGB LED Red
+    lcd.print("LOW CONC.");
+    lcd.setCursor(0,2);
+    lcd.print("SensRead:"); lcd.print(sensorVal);
+    delay(500);
+  }
+  else if(sensorVal >= 400 && sensorVal < 550) // Medium concentration case
+  {
+    PORTB = 0b00000010;  // Make RGB LED Blue
+    lcd.print("MED. CONC.");
+    lcd.setCursor(0,2);
+    lcd.print("SensRead:"); lcd.print(sensorVal);
+    delay(500);
+  }
+  else if(sensorVal >= 550) // High concentration case
+  {
+    PORTB = 0b00000100;  // Make RBG LED Green
+    lcd.print("HIGH CONC");
+    lcd.setCursor(0,2);
+    lcd.print("SensRead:"); lcd.print(sensorVal);
+    delay(500);
+  }
+}
