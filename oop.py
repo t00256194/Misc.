@@ -1,4 +1,4 @@
-# Object Oriented Programming in Python
+# OOP
 
 class Student:
     def __init__(self, name, age, grade):
